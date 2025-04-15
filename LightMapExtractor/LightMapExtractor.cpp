@@ -216,6 +216,11 @@ void initBmpFile(std::ofstream& out, uint16_t width, uint16_t height) {
     out.write((char*)&bmpInfo.importantColors, sizeof(uint32_t));
 }
 
+struct Pixel {
+    uint8_t blue;
+    uint8_t green;
+    uint8_t red;
+};
 
 int main()
 {
@@ -241,30 +246,30 @@ int main()
 
             for (uint16_t i = 0; i < map.height; i++) {
                 for (uint16_t j = 0; j < map.width; j++) {
-                    uint8_t pixel[3];
+                    Pixel pixel;
                     switch (k) {
                     case 0:
-                        pixel[2] = realTimeLights[rtlPtr+0];//*realTimeLights[rtlPtr+3])/255;
-                        pixel[1] = 0;//*realTimeLights[rtlPtr+3])/255;
-                        pixel[0] = 0;//*realTimeLights[rtlPtr+3])/255;
+                        pixel.red = realTimeLights[rtlPtr+0];//*realTimeLights[rtlPtr+3])/255;
+                        pixel.green = 0;//*realTimeLights[rtlPtr+3])/255;
+                        pixel.blue = 0;//*realTimeLights[rtlPtr+3])/255;
                         
                         rtlPtr+=4;
                         break;
                     case 1:
-                        pixel[2] = realTimeLights[rtlPtr+0];//*realTimeLights[rtlPtr+3])/255;
-                        pixel[1] = realTimeLights[rtlPtr+1];//*realTimeLights[rtlPtr+3])/255;
-                        pixel[0] = realTimeLights[rtlPtr+2];//*realTimeLights[rtlPtr+3])/255;
+                        pixel.red = realTimeLights[rtlPtr+0];//*realTimeLights[rtlPtr+3])/255;
+                        pixel.green = realTimeLights[rtlPtr+1];//*realTimeLights[rtlPtr+3])/255;
+                        pixel.blue = realTimeLights[rtlPtr+2];//*realTimeLights[rtlPtr+3])/255;
                         
                         rtlPtr+=4;
                         break;
                     case 2:
-                        pixel[1] = realTimeLights[rtlPtr]*7;//*realTimeLights[rtlPtr+3])/255;
-                        pixel[2] = 0;
-                        pixel[0] = 0;
+                        pixel.green = realTimeLights[rtlPtr]*7;//*realTimeLights[rtlPtr+3])/255;
+                        pixel.red = 0;
+                        pixel.blue = 0;
                         rtlPtr++;
                         break;
                     }
-                    outRtl.write((char*)pixel,3);
+                    outRtl.write((char*)&pixel,sizeof(pixel));
                         
 
                     
@@ -278,11 +283,11 @@ int main()
             initBmpFile(outSky,map.width,map.height);
             for (uint16_t i = 0; i < map.height; i++) {
                 for (uint16_t j = 0; j < map.width; j++) {
-                    uint8_t pixel[3];
-                    pixel[2] = skyLightMaps[skyPtr+0];//*realTimeLights[rtlPtr+3])/255;
-                    pixel[1] = skyLightMaps[skyPtr+1];//*realTimeLights[rtlPtr+3])/255;
-                    pixel[0] = skyLightMaps[skyPtr+2];//*realTimeLights[rtlPtr+3])/255;
-                    outSky.write((char*)pixel,3);
+                    Pixel pixel;
+                    pixel.red = skyLightMaps[skyPtr+0];//*realTimeLights[rtlPtr+3])/255;
+                    pixel.green = skyLightMaps[skyPtr+1];//*realTimeLights[rtlPtr+3])/255;
+                    pixel.blue = skyLightMaps[skyPtr+2];//*realTimeLights[rtlPtr+3])/255;
+                    outSky.write((char*)&pixel,sizeof(pixel));
                     skyPtr+=4;
                 }
             }
